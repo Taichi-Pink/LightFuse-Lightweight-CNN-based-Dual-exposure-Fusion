@@ -1,4 +1,3 @@
-# This is the code for MEF-GAN Dataset
 from __future__ import print_function
 import glob, os, cv2, time
 import tensorflow as tf
@@ -12,11 +11,11 @@ sheet1 = wb.sheet_by_index(0)
 
 # height = 4096
 # width = 8192
-patch_size = 256 #****************************************change!!!!!!!!!!!!!!
+patch_size = 256 
 batch_size = 20
-patch_stride = 256 #****************************************change!!!!!!!!!!!!!!
+patch_stride = 256 
 
-out_dir = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/New/Tfrecord_256_256/' #***************************change!!!!!!!!!!
+out_dir = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/New/Tfrecord_256_256/'
 data_dir = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/Dataset_Part1/'
 
 scene_dirs = [scene_dir for scene_dir in os.listdir(data_dir) if scene_dir!="Label"]
