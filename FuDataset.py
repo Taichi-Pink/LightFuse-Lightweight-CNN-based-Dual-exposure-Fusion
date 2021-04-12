@@ -5,43 +5,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 
-p = '/home/jieyang/Ziyi/Project/GAN/exposure_value_part1.xls'
+p = './exposure_value/exposure_value_part1.xls'
 wb = xlrd.open_workbook(p)
 sheet1 = wb.sheet_by_index(0)
 
 # height = 4096
 # width = 8192
-patch_size = 256 
-batch_size = 20
+patch_size   = 256 
+batch_size   = 20
 patch_stride = 256 
 
-out_dir = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/New/Tfrecord_256_256/'
-data_dir = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/Dataset_Part1/'
+out_dir      = './Dataset/tfrecord/'
+data_dir     = './Dataset/train/'
 
 scene_dirs = [scene_dir for scene_dir in os.listdir(data_dir) if scene_dir!="Label"]
 scene_dirs = sorted(scene_dirs, key=lambda i: int(os.path.splitext(os.path.basename(i))[0]))
-print(scene_dirs)
 num_scenes = len(scene_dirs)
-print('num_scenes:',num_scenes)
-count = 0
+
+count            = 0
 cur_writing_path = os.path.join(out_dir, "train_{:d}_{:04d}.tfrecords".format(patch_stride, 0))
-writer = tf.python_io.TFRecordWriter(cur_writing_path)
+writer           = tf.python_io.TFRecordWriter(cur_writing_path)
 
 def norm_0_to_1(img):
-    img = np.float32(img)
-    img_flat = img.flatten()
+    img       = np.float32(img)
+    img_flat  = img.flatten()
     max_value = np.max(img_flat)
     min_value = np.min(img_flat)
-    new_img = (img - min_value) * 1 / (max_value - min_value)
+    new_img   = (img - min_value) * 1 / (max_value - min_value)
     return new_img
-
-def lum2rgb(out_lum, in_lum, hdr_image):
-    rgb = np.zeros(np.shape(hdr_image))
-    rgb[:,:,0] = ((hdr_image[:,:,0]/(in_lum + 1e-10)) ** 0.6)*out_lum
-    rgb[:,:,1] = ((hdr_image[:,:,1]/(in_lum + 1e-10)) ** 0.6)*out_lum
-    rgb[:,:,2] = ((hdr_image[:,:,2]/(in_lum + 1e-10)) ** 0.6)*out_lum
-    return rgb
-
 
 def bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
@@ -61,10 +52,10 @@ def crop_random(over_exp, under_exp, label, patch_size):
                                             "train_{:d}_{:04d}.tfrecords".format(patch_stride, cur_batch_index))
             writer = tf.python_io.TFRecordWriter(cur_writing_path)
 
-        over_exp_patch = over_exp[h1:h2, w1:w2, ::-1]
+        over_exp_patch  = over_exp[h1:h2, w1:w2, ::-1]
         under_exp_patch = under_exp[h1:h2, w1:w2, ::-1]
-        in_LDR_patch = np.concatenate([under_exp_patch, over_exp_patch], axis=2)
-        ref_HDR_patch = label[h1:h2, w1:w2, ::-1]
+        in_LDR_patch    = np.concatenate([under_exp_patch, over_exp_patch], axis=2)
+        ref_HDR_patch   = label[h1:h2, w1:w2, ::-1]
 
         count += 1
 
@@ -77,6 +68,7 @@ def crop_random(over_exp, under_exp, label, patch_size):
              plt.subplot(313).set_title('ref_HDR')
              plt.imshow(ref_HDR_patch)
              plt.show()
+            
         # create example
         example = tf.train.Example(features=tf.train.Features(feature={
             'in_LDR': bytes_feature(in_LDR_patch.tostring()),
@@ -102,50 +94,47 @@ def crop_random(over_exp, under_exp, label, patch_size):
         write_example(h - patch_size, h, w - patch_size, w)
 
 
+if __name__ == "__main__":
+    """####################### image reading ############################"""
+    for index in range(num_scenes):
+        start_img_time = time.time()
+        cur_path       = scene_dirs[index]
+        if cur_path=="Label":
+          continue
+        cur_path       = os.path.join(data_dir, cur_path)
 
-"""####################### image reading ############################"""
-#for index in range(10):
-for index in range(num_scenes):
-    start_img_time = time.time()
-    cur_path = scene_dirs[index]
-    if cur_path=="Label":
-      continue
-    cur_path = os.path.join(data_dir, cur_path)
+        # Read HDR LDR images
+        file_list     = glob.glob(cur_path + '/*.{}'.format('JPG'))
+        file_list     = sorted(file_list, key=lambda i: int(os.path.splitext(os.path.basename(i))[0])) 
+        length_images = len(file_list)
 
-    # Read HDR LDR images
-    file_list = glob.glob(cur_path + '/*.{}'.format('JPG'))
-    file_list = sorted(file_list, key=lambda i: int(os.path.splitext(os.path.basename(i))[0]))
-    print(file_list)
-    length_images = len(file_list)
-    
-    no = int(scene_dirs[index])
-    under_index = sheet1.cell_value(no, 1)
-    over_index = sheet1.cell_value(no, 2)
-    under_index = int(under_index)
-    over_index = int(over_index)
-    print('no:%d, over:%d, under:%d'%(no, over_index, under_index))
-    
-    over_exp = cv2.imread(file_list[over_index-1])
-    under_exp = cv2.imread(file_list[under_index-1])
+        no          = int(scene_dirs[index])
+        under_index = sheet1.cell_value(no, 1)
+        over_index  = sheet1.cell_value(no, 2)
+        under_index = int(under_index)
+        over_index  = int(over_index)
+        print('no:%d, over:%d, under:%d'%(no, over_index, under_index))
 
-    # finding corresponding ldr image
-    label_p = os.path.join(data_dir, 'Label', scene_dirs[index]+'.JPG')
-    label = cv2.imread(label_p)
-    ''' check shape '''
-    assert (np.shape(over_exp) == np.shape(label))
-    assert (np.shape(over_exp) == np.shape(under_exp))
+        over_exp  = cv2.imread(file_list[over_index-1])
+        under_exp = cv2.imread(file_list[under_index-1])
 
-    ''' bring to [0,1] '''
-    over_exp = norm_0_to_1(over_exp)
-    under_exp = norm_0_to_1(under_exp)
-    label = norm_0_to_1(label)
-    '''############################ cropping images ############################'''
-    crop_random(over_exp, under_exp, label, patch_size)
-    elapsed_img = time.time() - start_img_time
+        # finding corresponding ldr image
+        label_p = os.path.join(data_dir, 'Label', scene_dirs[index]+'.JPG')
+        label   = cv2.imread(label_p)
+        ''' check shape '''
+        assert (np.shape(over_exp) == np.shape(label))
+        assert (np.shape(over_exp) == np.shape(under_exp))
 
-    print('Processed Image -> ' + cur_path,
-          ' %d / %d, took: %s' % (index + 1, num_scenes, elapsed_img))
-    print('-------------------------------------------------------------------------------------------------\n')
+        ''' bring to [0,1] '''
+        over_exp  = norm_0_to_1(over_exp)
+        under_exp = norm_0_to_1(under_exp)
+        label     = norm_0_to_1(label)
+        
+        '''############################ cropping images ############################'''
+        crop_random(over_exp, under_exp, label, patch_size)
+        elapsed_img = time.time() - start_img_time
 
-writer.close()
-print("Finished!\nTotal number of patches:", count)
+        print('Processed Image ->' + cur_path, ' %d / %d, took: %s' % (index + 1, num_scenes, elapsed_img)) 
+
+    writer.close()
+    print("Finished!\nTotal number of patches:", count)
