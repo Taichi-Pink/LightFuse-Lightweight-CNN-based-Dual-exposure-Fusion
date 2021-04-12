@@ -1,12 +1,11 @@
-from tensorflow.keras import backend as K
 import tensorflow as tf
 import numpy as np
+import cv2, glob, os,math
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.models import Model
-import cv2, glob, os,math
-from tensorflow import keras
-from tensorflow.keras import layers, Model
 from tensorflow.keras import backend as K
+from tensorflow.keras import layers, Model
+from tensorflow import keras
 
 select_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
 vgg19 = VGG16(include_top=False, weights='imagenet', input_shape=(256,256,3))
@@ -54,18 +53,7 @@ def compute_psnr(img1, img2):
     PIXEL_MAX = 1.0 
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
 
-def model_test1(w,h,c):
-  input_ = keras.Input((w, h, c))
-  x1 = layers.SeparableConv2D(256, (3, 3), strides=(1, 1), padding="same", activation='relu')(input_)
-  x1 = layers.SeparableConv2D(64, (3, 3), strides=(1, 1), padding="same", activation='relu')(x1)
-  x1 = layers.SeparableConv2D(3, (3, 3), strides=(1, 1), padding="same", activation='relu')(x1)
-  output_ = layers.Activation('tanh')(x1) 
-  model = Model(inputs=input_, outputs=output_)
-  op = keras.optimizers.Adam(learning_rate=0.001)
-  model.compile(optimizer=op, loss=vgg_loss)
-  return model
-
-def model_test(w,h,c):
+def supervised_model(w,h,c):
   input_ = keras.Input((w, h, c))
   x1 = layers.Conv2D(256, (1, 1), strides=(1, 1), padding="same", activation='relu')(input_)
   x1 = layers.Conv2D(64, (1, 1), strides=(1, 1), padding="same", activation='relu')(x1)
@@ -98,25 +86,3 @@ def transform(image, im_size=(256,256)):
     out = tf.cast(image, tf.float32)
     out = tf.image.resize_images(out, im_size)
     return out*2. - 1.
-
-class MyLayer(tf.keras.layers.Layer):
-    def __init__(self, **kwargs):
-        super(MyLayer, self).__init__(**kwargs)
-
-    def build(self, input_shape):
-        # Create a trainable weight variable for this layer.
-        self.a = self.add_weight(name='a', 
-                                    shape=(1,),
-                                    initializer='uniform',
-                                    trainable=True)
-        self.b = self.add_weight(name='b', 
-                                    shape=(1,),
-                                    initializer='uniform',
-                                    trainable=True)                         
-        super(MyLayer, self).build(input_shape)  # Be sure to call this at the end
-
-    def call(self, x):
-        return self.a*x + self.b
-
-    def compute_output_shape(self, input_shape):
-        return input_shape[0]
