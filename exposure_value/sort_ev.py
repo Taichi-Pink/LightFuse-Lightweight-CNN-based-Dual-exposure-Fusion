@@ -18,7 +18,7 @@ sheet1.write(0, 4, 'Over_EV')
 sheet1.write(0, 5, 'total_images')
 
 scene_no = 361
-data_dir = r'G:\PROJECTS\FPGA\Fusion Dataset\Cai2018\Dataset_Part1\Dataset_Part1'
+data_dir = './Dataset/train'
 
 for no in range(1, scene_no):
     file_p = os.path.join(data_dir,  str(no))
@@ -49,29 +49,4 @@ for no in range(1, scene_no):
    
 
 wb.save('exposure_value_part1_all.xls')
-    # rewrite images according to its EV
-    # for i in range(length_images):
-    #     plt.subplot(5, max(length_images // 4 + 1, 1), i + 1).set_title(str(i + 1))
-    #     ind = sorted_by_second[i][0]
-    #     p = file_list[ind]
-    #     im = cv2.imread(p)
-    #     plt.imshow(im)
-    # plt.show()
-
-    # for i in range(length_images):
-    #     ev = cv2.imread(file_list[sorted_by_second[i][0]])
-    #     im_p = os.path.join(results_p, str(i + 1) + '.png')
-    #     if not os.path.exists(results_p):
-    #         os.makedirs(results_p)
-    #     cv2.imwrite(im_p, ev)
-    #
-    #     # Convert 2 images to numpy arrays and compare pixel by pixel
-    #     ev_cp = cv2.imread(im_p)
-    #     flag = (ev == ev_cp).all()
-    #     #print(np.where(flag==False))
-    #     print(flag)
-
-
-
-
 
