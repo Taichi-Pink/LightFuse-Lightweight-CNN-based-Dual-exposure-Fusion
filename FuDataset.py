@@ -5,12 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 
-p = './exposure_value/exposure_value_part1.xls'
-wb = xlrd.open_workbook(p)
+p      = './exposure_value/exposure_value_part1.xls'
+wb     = xlrd.open_workbook(p)
 sheet1 = wb.sheet_by_index(0)
 
-# height = 4096
-# width = 8192
 patch_size   = 256 
 batch_size   = 20
 patch_stride = 256 
