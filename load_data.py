@@ -1,13 +1,14 @@
 import tensorflow as tf
 import os, glob, datetime
-from time import time
 import matplotlib.pyplot as plt
 import numpy as np
-from keras import backend as K
 import pickle
+from keras import backend as K
+from time import time
 from utils import *
+
 ch = 3
-tfrecord_path = '/home/jieyang/Ziyi/Dataset/Dataset_Part1/New/Tfrecord_256_256' #****************************************change!
+tfrecord_path      = './Dataset/tfrecord'
 tfrecord_file_list = glob.glob(tfrecord_path + '/*.{}'.format('tfrecords'))
 
 def load_data(bs, patch_size):
@@ -29,8 +30,7 @@ def load_data(bs, patch_size):
       label = tf.io.decode_raw(feature_dict['ref_HDR'], tf.float32)
       label = tf.cast(label, dtype='float32')
       label = tf.reshape(label, [patch_size, patch_size, ch])
-  
-      ######### distortions #########
+   
       distortions = tf.random_uniform([2], 0, 1.0, dtype=tf.float32)
   
       # flip horizontally
@@ -41,7 +41,7 @@ def load_data(bs, patch_size):
       k = tf.cast(distortions[1] * 4 + 0.5, tf.int32)
       image = tf.image.rot90(image, k)
       label = tf.image.rot90(label, k)
-      ######### distortions #########
+      
       return image, label
   
   #dataset = dataset.repeat()
@@ -51,31 +51,32 @@ def load_data(bs, patch_size):
   batch = dataset.batch(batch_size=bs)
   
   return batch
-  
+
 if __name__ == "__main__":
+    ## check if the data processed right
     data = load_data()
     iter = data.make_one_shot_iterator()
-    el = iter.get_next()
+    next_data   = iter.get_next()
      
     with tf.Session() as sess:
         count = 500
-        bs = 20
+        bs    = 20
         while(count):
-            index = 0
-            img, lab = sess.run(el)
+            index    = 0
+            img, lab = sess.run(next_data)
             for i in range(bs//10): 
                 plt.figure(1)
                 for j in range(10):
-                      plt.subplot(4,5,j+1).set_title('count:{} bs:{}'.format(count, i))
+                      plt.subplot(4, 5, j+1).set_title('count:{} bs:{}'.format(count, i))
                       plt.imshow(np.squeeze(img[index:index+1, :, : , 0:3]))
                
-                      plt.subplot(4,5,j+11)
+                      plt.subplot(4, 5, j+11)
                       plt.imshow(np.squeeze(lab[index:index+1, :, : , :]))
                       
                       index = index + 1
                 plt.show()
      
-            count = count -1
+            count = count - 1
         
     
     
