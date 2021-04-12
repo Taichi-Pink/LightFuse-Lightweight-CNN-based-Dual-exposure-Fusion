@@ -1,6 +1,6 @@
 # LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion
 
-##Implemet
+## Implemet
 1.dowload data from link, run sort_ev.py.
 2.split the data into training and testing set.
 3.run FuDataset.py; pair its lowest and highest-exposed img according to .exls.
