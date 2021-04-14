@@ -8,13 +8,13 @@ from tensorflow.keras import layers, Model
 from tensorflow import keras
 
 select_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
-vgg19 = VGG16(include_top=False, weights='imagenet', input_shape=(256,256,3))
-vgg19.trainable = False
-for l in vgg19.layers:
+vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=(256,256,3))
+vgg16.trainable = False
+for l in vgg16.layers:
   l.trainable = False
-select = [vgg19.get_layer(name).output for name in select_layers]
+select = [vgg16.get_layer(name).output for name in select_layers]
 
-model_vgg = Model(inputs=vgg19.input, outputs=select)
+model_vgg = Model(inputs=vgg16.input, outputs=select)
 model_vgg.trainable = False
     
 def vgg_loss(y_true, y_pred):
@@ -55,20 +55,20 @@ def compute_psnr(img1, img2):
 
 def supervised_model(w,h,c):
   input_ = keras.Input((w, h, c))
-  x1 = layers.Conv2D(256, (1, 1), strides=(1, 1), padding="same", activation='relu')(input_)
-  x1 = layers.Conv2D(64, (1, 1), strides=(1, 1), padding="same", activation='relu')(x1)
-  x1 = layers.Conv2D(3, (1, 1), strides=(1, 1), padding="same", activation='relu')(x1)
+  out_1 = layers.Conv2D(256, (1, 1), strides=(1, 1), padding="same", activation='relu')(input_)
+  out_1 = layers.Conv2D(64, (1, 1), strides=(1, 1), padding="same", activation='relu')(out_1)
+  out_1 = layers.Conv2D(3, (1, 1), strides=(1, 1), padding="same", activation='relu')(out_1)
   
-  x2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(input_)
-  x2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(x2)
-  x2 = layers.SeparableConv2D(3, (3,3), strides = (2, 2), padding="same")(x2)
+  out_2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(input_)
+  out_2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(out_2)
+  out_2 = layers.SeparableConv2D(3, (3,3), strides = (2, 2), padding="same")(out_2)
   
-  x2 = layers.UpSampling2D(size=(2, 2))(x2)  
-  x2 = layers.UpSampling2D(size=(2, 2))(x2) 
-  x2 = layers.UpSampling2D(size=(2, 2))(x2)
+  out_2 = layers.UpSampling2D(size=(2, 2))(out_2)  
+  out_2 = layers.UpSampling2D(size=(2, 2))(out_2) 
+  out_2 = layers.UpSampling2D(size=(2, 2))(out_2)
   
-  x = layers.Add()([x1, x2])
-  output_ = layers.Activation('tanh')(x) 
+  out = layers.Add()([out_1, out_2])
+  output_ = layers.Activation('tanh')(out) 
   model = Model(inputs=input_, outputs=output_)
   op = keras.optimizers.Adam(learning_rate=0.001)
   model.compile(optimizer=op, loss=vgg_loss)
