@@ -1,7 +1,7 @@
 # LightFuse: Lightweight CNN based Dual-exposure Fusion
 ##
 <p align="middle">
-<img src="exposure_fusion/272_deepfuse.png" width="200"><img src="exposure_fusion/272_exposure.png" width="200"><img src="exposure_fusion/272_our.png" width="200"><img src="exposure_fusion/272_label.png" width="200">
+<img src="exposure_fusion/272_deepfuse.png" width="180"><img src="exposure_fusion/272_exposure.png" width="180"><img src="exposure_fusion/272_our.png" width="180"><img src="exposure_fusion/272_label.png" width="180">
 </p>
 <p align="middle">
 <img src="exposure_fusion/13_deepfuse.png" width="220"><img src="exposure_fusion/13_exposure.png" width="220"><img src="exposure_fusion/13_our.png" width="220"><img src="exposure_fusion/13_label.png" width="220">
