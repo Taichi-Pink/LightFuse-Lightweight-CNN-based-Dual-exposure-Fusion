@@ -1,6 +1,8 @@
 # LightFuse: Lightweight CNN based Dual-exposure Fusion
 ## 
-<img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_deepfuse.png" width="100"> <img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_exposure.png" width="100"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_our.png" width="100"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_label.png" width="100">
+<img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_deepfuse.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_exposure.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_our.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/272_label.png" width="225">
+<img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/13_deepfuse.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/13_exposure.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/13_our.png" width="225"><img src="https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion/blob/main/exposure_fusion/13_label.png" width="225">
+
 
 This is the implementation for [LightFuse: Lightweight CNN based Dual-exposure Fusion]().
 
