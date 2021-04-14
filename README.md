@@ -2,8 +2,13 @@
 ##
 <p align="middle">
   <img src="exposure_fusion/272_deepfuse.png" width="220"><img src="exposure_fusion/272_exposure.png" width="220"><img src="exposure_fusion/272_our.png" width="220"><img src="exposure_fusion/272_label.png" width="220">
+</p>
+<p align="middle">
   <img src="exposure_fusion/13_deepfuse.png" width="220"><img src="exposure_fusion/13_exposure.png" width="220"><img src="exposure_fusion/13_our.png" width="220"><img src="exposure_fusion/13_label.png" width="220">
-  <img src="exposure_fusion/112_deepfuse.png" width="220"><img src="exposure_fusion/112_exposure.png" width="220"><img src="exposure_fusion/112_our.png" width="220"><img src="exposure_fusion/112_label.png" width="220">
+</p>
+<p align="middle">
+<img src="exposure_fusion/112_deepfuse.png" width="220"><img src="exposure_fusion/112_exposure.png" width="220"><img src="exposure_fusion/112_our.png" width="220"><img src="exposure_fusion/112_label.png" width="220">
+</p>
   <img src="exposure_fusion/23_deepfuse.png" width="220"><img src="exposure_fusion/23_exposure.png" width="220"><img src="exposure_fusion/23_our.png" width="220"><img src="exposure_fusion/23_label.png" width="220">
   <img src="exposure_fusion/124_deepfuse.png" width="220"><img src="exposure_fusion/124_exposure.png" width="220"><img src="exposure_fusion/124_our.png" width="220"><img src="exposure_fusion/124_label.png" width="220">
   <img src="exposure_fusion/113_deepfuse.png" width="220"><img src="exposure_fusion/113_exposure.png" width="220"><img src="exposure_fusion/113_our.png" width="220"><img src="exposure_fusion/113_label.png" width="220">
