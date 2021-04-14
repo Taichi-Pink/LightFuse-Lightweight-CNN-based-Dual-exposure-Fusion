@@ -1,3 +1,4 @@
+## Pair the lowest and the highest-exposed img according to exposure_value_part1.xls.
 from __future__ import print_function
 import glob, os, cv2, time
 import tensorflow as tf
