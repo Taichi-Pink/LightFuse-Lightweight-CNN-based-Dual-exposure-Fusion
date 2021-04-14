@@ -110,10 +110,8 @@ if __name__ == "__main__":
         length_images = len(file_list)
 
         no          = int(scene_dirs[index])
-        under_index = sheet1.cell_value(no, 1)
-        over_index  = sheet1.cell_value(no, 2)
-        under_index = int(under_index)
-        over_index  = int(over_index)
+        under_index = int(sheet1.cell_value(no, 1))
+        over_index  = int(sheet1.cell_value(no, 2))
         print('no:%d, over:%d, under:%d'%(no, over_index, under_index))
 
         over_exp  = cv2.imread(file_list[over_index-1])
