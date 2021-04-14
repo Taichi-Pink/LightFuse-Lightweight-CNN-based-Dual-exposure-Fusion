@@ -7,6 +7,11 @@ the channel-related information, whereas FilteringNet aims in combining the spat
 
 ## Get Started
 ### Prerequisites
+ * Python 	     =3.7.9
+ * TensorFlow   = 1.15.0
+ * Opencv-python  = 1.15.0
+ * Scipy 
+ * Matplotlib 
 
 ## Implemet
   * dowload data from link, run sort_ev.py.
