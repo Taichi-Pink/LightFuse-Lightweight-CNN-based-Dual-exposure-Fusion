@@ -7,8 +7,11 @@ from tensorflow.keras import backend as K
 from tensorflow.keras import layers, Model
 from tensorflow import keras
 
+patch_size = 256
+ch         = 3
+
 select_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
-vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=(256,256,3))
+vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=(patch_size, patch_size, ch))
 vgg16.trainable = False
 for l in vgg16.layers:
   l.trainable = False
@@ -53,15 +56,15 @@ def compute_psnr(img1, img2):
     PIXEL_MAX = 1.0 
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
 
-def supervised_model(w,h,c):
+def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, f1=256, f2=64, pad="same", act='relu'):
   input_ = keras.Input((w, h, c))
-  out_1 = layers.Conv2D(256, (1, 1), strides=(1, 1), padding="same", activation='relu')(input_)
-  out_1 = layers.Conv2D(64, (1, 1), strides=(1, 1), padding="same", activation='relu')(out_1)
-  out_1 = layers.Conv2D(3, (1, 1), strides=(1, 1), padding="same", activation='relu')(out_1)
+  out_1 = layers.Conv2D(f1, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(input_)
+  out_1 = layers.Conv2D(f2, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(out_1)
+  out_1 = layers.Conv2D(c//2, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(out_1)
   
-  out_2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(input_)
-  out_2 = layers.DepthwiseConv2D((3,3), strides = (2, 2), padding="same")(out_2)
-  out_2 = layers.SeparableConv2D(3, (3,3), strides = (2, 2), padding="same")(out_2)
+  out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(input_)
+  out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(out_2)
+  out_2 = layers.SeparableConv2D(c//2, (k2,k2), strides = (s2, s2), padding=pad)(out_2)
   
   out_2 = layers.UpSampling2D(size=(2, 2))(out_2)  
   out_2 = layers.UpSampling2D(size=(2, 2))(out_2) 
