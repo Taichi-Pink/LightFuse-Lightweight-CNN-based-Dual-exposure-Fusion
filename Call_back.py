@@ -3,14 +3,15 @@ import tensorflow.keras as keras
 import tensorflow as tf
 
 class EarlyStoppingAtMinLoss(keras.callbacks.Callback):
-    """Stop training when the loss is at its min, i.e. the loss stops decreasing.
+  """
+  Stop training when the loss is at its min, i.e. the loss stops decreasing.
 
   Arguments:
       patience: Number of epochs to wait after min has been hit. After this
       number of no improvement, training stops.
   """
 
-    def __init__(self, weight_path='gen.h5',  patience=0):
+    def __init__(self, weight_path='gen.h5',  patience=10):
         self.patience = patience
         # best_weights to store the weights at which the minimum loss occurs.
         self.best_weights = None
@@ -26,10 +27,7 @@ class EarlyStoppingAtMinLoss(keras.callbacks.Callback):
         self.best = np.Inf
 
     def on_epoch_end(self, epoch=0, logs=None, name='loss'):
-        if name == "d_loss":
-          current = logs.get("d_loss")
-        else:
-          current = logs.get("g_loss")
+        current = logs.get(name)
         if np.less(current, self.best):
             self.best = current
             self.wait = 0
@@ -49,12 +47,13 @@ class EarlyStoppingAtMinLoss(keras.callbacks.Callback):
             print("Epoch %05d: early stopping" % (self.stopped_epoch + 1))
             
 class CustomLearningRateScheduler(keras.callbacks.Callback):
-    """Learning rate scheduler which sets the learning rate according to schedule.
+  """
+  Learning rate scheduler which sets the learning rate according to schedule.
 
   Arguments:
       schedule: a function that takes an epoch index
-          (integer, indexed from 0) and current learning rate
-          as inputs and returns a new learning rate as output (float).
+                (integer, indexed from 0) and current learning rate
+                as inputs and returns a new learning rate as output (float).
   """
 
     def __init__(self, schedule=None):
@@ -82,7 +81,9 @@ LR_SCHEDULE = [
     ]
     
 def lr_schedule(epoch, lr):
-    """Helper function to retrieve the scheduled learning rate based on epoch."""
+    """
+    Helper function to retrieve the scheduled learning rate based on epoch.
+    """
     if epoch < LR_SCHEDULE[0][0] or epoch > LR_SCHEDULE[-1][0]:
         return lr
     for i in range(len(LR_SCHEDULE)):
@@ -106,9 +107,9 @@ def named_logs(model, logs):
 def tensorboard_summary(predictions, hdrs, writer, model, step_count):
   with writer.as_default(), tf.contrib.summary.always_record_summaries():
     tf.contrib.summary.image("G_ref", hdrs, step=step_count)          
-    tf.contrib.summary.image("gen", predictions, step=step_count)
-    #tf.contrib.summary.image("l1", l1, step=step_count)
-    #tf.contrib.summary.image("l2", l2, step=step_count)
+    tf.contrib.summary.image("results", predictions, step=step_count)
+    #tf.contrib.summary.image("under_exposed", un, step=step_count)
+    #tf.contrib.summary.image("over_exposed", ov, step=step_count)
                 
     for layer in model.layers:
       if not layer.weights:
@@ -118,15 +119,18 @@ def tensorboard_summary(predictions, hdrs, writer, model, step_count):
         tf.contrib.summary.histogram(weights_name, weights_numpy_array, step=step_count)
 
 def record(model, bs, result_path):
-  tensorboard_3 = keras.callbacks.TensorBoard(log_dir=result_path+'tensorboard/',batch_size=bs)
-  #lr_auto_gen = keras.callbacks.ReduceLROnPlateau(monitor='g_loss', factor=0.2, cooldown=0,patience=0,mode="min", min_lr=.00001)
+  """
+  Create File writer, TensorBoard, and EarlyStopping before training.
+  """
+  tensorboard_ = keras.callbacks.TensorBoard(log_dir=result_path + 'tensorboard/',batch_size=bs)
+  #lr_auto_gen = keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.2, cooldown=0,patience=0,mode="min", min_lr=.00001)
   early_gen = EarlyStoppingAtMinLoss(weight_path='model1.h5', patience=2)
   
   #lr_auto_gen.set_model(model)
-  tensorboard_3.set_model(model)
+  tensorboard_.set_model(model)
   early_gen.set_model(model)
   
-  writer = tf.contrib.summary.create_file_writer(result_path+'tfsummary/')
-  return writer, tensorboard_3, early_gen
+  writer = tf.contrib.summary.create_file_writer(result_path + 'tfsummary/')
+  return writer, tensorboard_, early_gen
   
               
