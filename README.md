@@ -29,7 +29,7 @@ To our best knowledge, this is the first lightweight HDR fusion algorithm that c
  git clone https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion.git
  cd LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion
  ```
- * Download data from [SICE dataset](https://github.com/csjcai/SICE). Place it under ```Dataset``` folder. Split the data in Dataset_Part1 into train (80%) and test (20%) set.
+ <!-- * Download data from [SICE dataset](https://github.com/csjcai/SICE). Place it under ```Dataset``` folder. Split the data in Dataset_Part1 into train (80%) and test (20%) set. -->
 
 ### Demo
  ```
