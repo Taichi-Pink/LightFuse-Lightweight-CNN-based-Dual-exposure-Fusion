@@ -37,12 +37,12 @@ def test(model, path):
     cur_path = os.path.join(data_dir, cur_path)
   
     no          = int(scene_dirs[index])
-    under_index = sheet1.cell_value(no, 1)
-    over_index  = sheet1.cell_value(no, 2)
+    under_index = int(sheet1.cell_value(no, 1))
+    over_index  = int(sheet1.cell_value(no, 2))
         
-    over_exp  = cv2.imread(os.path.join(cur_path, over_index + '.JPG'))
+    over_exp  = cv2.imread(os.path.join(cur_path, str(over_index) + '.JPG'))
     over_exp  = over_exp[:, :, ::-1]
-    under_exp = cv2.imread(os.path.join(cur_path, under_index + '.JPG'))
+    under_exp = cv2.imread(os.path.join(cur_path, str(under_index) + '.JPG'))
     under_exp = under_exp[:, :, ::-1]
         
     ''' finding corresponding ldr image ''' 
@@ -69,8 +69,8 @@ def test(model, path):
     ldr     = np.squeeze(ldr)
     ldr_    = ((ldr+1.)/2.)
     
-   tem = ldr_*255.
-   tem = tem.astype(np.uint8)
+    tem = ldr_*255.
+    tem = tem.astype(np.uint8)
     #  plt.imshow(tem)
     #  plt.show()
     
