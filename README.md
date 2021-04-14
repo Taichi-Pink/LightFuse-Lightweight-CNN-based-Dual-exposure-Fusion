@@ -26,7 +26,10 @@ the channel-related information, whereas FilteringNet aims in combining the spat
  python test.py
  ```
 ### Train
-  * run FuDataset.py; pair its lowest and highest-exposed img according to exposure_value_part1.xls.
+  * Prepare TFRecord.
+  ```
+  python FuDataset.py
+  ```
   * run train.py
 
 
