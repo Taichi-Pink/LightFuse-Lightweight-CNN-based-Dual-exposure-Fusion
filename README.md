@@ -7,17 +7,27 @@ the channel-related information, whereas FilteringNet aims in combining the spat
 
 ## Get Started
 ### Prerequisites
- * Python 	     =3.7.9
- * TensorFlow   = 1.15.0
- * Opencv-python  = 1.15.0
- * Scipy 
- * Matplotlib 
+ * Python 	       = 3.7.9
+ * TensorFlow     = 1.15.0
+ * Opencv-python  = 4.4.0.44
+ * Scipy          = 1.5.2
+ * Matplotlib     = 3.3.1
+  
+### Setup
+ * Clone this repo:
+ ```
+ git clone https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion.git
+ cd LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion
+ ```
+ * Download data from [SICE dataset](https://github.com/csjcai/SICE).Place it under ```Dataset``` folder. Split the data in Dataset_Part1 into train (80%) and test (20%) set.
 
-## Implemet
-  * dowload data from link, run sort_ev.py.
-  * split the data into training and testing set.
-  * run FuDataset.py; pair its lowest and highest-exposed img according to .exls.
+### Demo
+ ```
+ python test.py
+ ```
+### Train
+  * run FuDataset.py; pair its lowest and highest-exposed img according to exposure_value_part1.xls.
   * run train.py
-  * run test.py
+
 
 ## Citation
