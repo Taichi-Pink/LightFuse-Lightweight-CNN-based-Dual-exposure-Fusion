@@ -28,7 +28,7 @@
 <img src="exposure_fusion/148_deepfuse.png" width="180"><img src="exposure_fusion/148_exposure.png" width="180"><img src="exposure_fusion/148_our.png" width="180"><img src="exposure_fusion/148_label.png" width="180">
 </p>
 <p align="middle">
-&emsp;&emsp; (a) DeepFuse&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(b) Mertens09&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &emsp; (c) Proposed&emsp;&emsp;&emsp;&emsp;&emsp; (d)Reference
+&emsp;&emsp; (a) DeepFuse&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(b) Mertens09&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; (c) Proposed&emsp;&emsp;&emsp;&emsp; (d)Reference
 </p>
 
 This is the implementation for [LightFuse: Lightweight CNN based Dual-exposure Fusion]().
