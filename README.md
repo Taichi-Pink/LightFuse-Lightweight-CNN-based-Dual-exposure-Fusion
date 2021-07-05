@@ -4,9 +4,7 @@
 <img src="exposure_fusion/github1.png" ><img src="exposure_fusion/github2.png"><img src="exposure_fusion/github3.png">
 </p>
 
-Official codebase for [LightFuse: Lightweight CNN based Dual-exposure Fusion](). Contains demo (see [demo.ipynb](demo.ipynb)) and scripts to reproduce experiments.
-
-<!-- ## To our best knowledge, this is the first lightweight HDR fusion algorithm that could be used in power and resource constrained edge-computing devices. It is challenging to train a lightweight model with fewer parameters and layers while maintain comparable performance. The proposed LightFuse model consists of two sub-networks: a ```CombiningNet``` and a ```FilteringNet```. The ```goal of CombiningNet is to learn the channel-related information, whereas FilteringNet aims in combining the spatial information```. Both CombiningNet and FilteringNet is based on ```depthwise separable convolution``` to reduce required parameters and computations. LightFuse is trained with extreme exposure images to avoid possible fail during inference phase.-->
+Official codebase for [LightFuse: Lightweight CNN based Dual-exposure Fusion](). Contains demo (see [demo.ipynb](demo.ipynb)) and scripts to reproduce experiments. To our best knowledge, this is the first lightweight HDR fusion algorithm that could be used in power and resource constrained edge-computing devices. It is challenging to train a lightweight model with fewer parameters and layers while maintain comparable performance. The proposed LightFuse model consists of two sub-networks: a ```GlobalNet``` and a ```DetailNet```. The ```goal of GlobalNet is to learn global illumination information on the spatial dimension, whereas DetailNet aims to enhance local details on the channel dimension```. Both GlobalNet and DetailNet is based solely on ``depthwise convolution and pointwise convolution``` to reduce required parameters and computations. LightFuse is trained with two extreme exposure LDR images to avoid problems such as large storage requirements, processing time, and power budget caused by a sequence of LDR images.
 
 ## Get Started
 ### Prerequisites
