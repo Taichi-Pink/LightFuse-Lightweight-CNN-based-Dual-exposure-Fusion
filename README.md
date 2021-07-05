@@ -32,6 +32,8 @@ The official codebase for [LightFuse: Lightweight CNN based Dual-exposure Fusion
   python FuDataset.py
   ```
   * run train.py
-
+  ```
+  python train.py
+  ```
 
 <!-- ## Citation --> 
