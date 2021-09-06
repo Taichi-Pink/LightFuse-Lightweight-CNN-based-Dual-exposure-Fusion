@@ -54,7 +54,7 @@ def load_data(bs, patch_size):
 
 if __name__ == "__main__":
     ## check if the data processed right
-    data = load_data()
+    data = load_data(1, 256)
     iter = data.make_one_shot_iterator()
     next_data   = iter.get_next()
      
