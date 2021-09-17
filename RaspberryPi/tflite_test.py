@@ -87,11 +87,11 @@ def test_tflite():
     output_details = interpreter.get_output_details()
 
     # load data
-    p_over = r'./over_exp256x128.png'
+    p_over = './over_exp256x128.png'
     over_exp = cv2.imread(p_over)
     over_exp = over_exp[:, :, ::-1]
 
-    p_under = r'./under_exp256x128.png'
+    p_under = './under_exp256x128.png'
     under_exp = cv2.imread(p_under)
     under_exp = under_exp[:, :, ::-1]
 
