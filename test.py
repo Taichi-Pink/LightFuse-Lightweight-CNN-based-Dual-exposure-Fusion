@@ -12,8 +12,8 @@ wb     = xlrd.open_workbook(p)
 sheet1 = wb.sheet_by_index(0)
 
 ch = 6
-w  = 2736
-h  = 1824
+w  = 2688
+h  = 1792
 results_path   = './result_final_test/'
 if not os.path.exists(results_path):
   os.makedirs(results_path)

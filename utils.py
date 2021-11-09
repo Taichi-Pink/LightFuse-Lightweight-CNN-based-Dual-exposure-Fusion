@@ -57,26 +57,65 @@ def compute_psnr(img1, img2):
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
 
 def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, f1=256, f2=64, pad="same", act='relu'):
-  input_ = keras.Input((w, h, c))
-  out_1 = layers.Conv2D(f1, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(input_)
-  out_1 = layers.Conv2D(f2, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(out_1)
-  out_1 = layers.Conv2D(c//2, (k1, k1), strides=(s1, s1), padding=pad, activation=act)(out_1)
+    input_ = keras.Input((w, h, c))
+    conv_ = custconv2d()
+    out_1 = conv_(input_)
+
+    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad, activation=act)(input_)
+    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad, activation=act)(out_2)
+    out_2 = layers.SeparableConv2D(c//2, (k2,k2), strides = (s2, s2), padding=pad, activation=act)(out_2)
+
+    out_2 = layers.UpSampling2D(size=(2, 2))(out_2)  
+    out_2 = layers.UpSampling2D(size=(2, 2))(out_2) 
+    out_2 = layers.UpSampling2D(size=(2, 2))(out_2)
+
+    out = layers.Add()([out_1, out_2])
+    output_ = layers.Activation('tanh')(out)
+    model = Model(inputs=input_, outputs=output_)
+    op = keras.optimizers.Adam(learning_rate=0.001)
+    model.compile(optimizer=op, loss=vgg_loss)
+    return model
+
+class custconv2d(keras.layers.Layer):
+  def __init__(self):
+    super(custconv2d, self).__init__()
+    self.w1 = self.add_weight(shape=(1,1,6,256), initializer="random_normal", trainable=True, name='w1')
+    self.b1 = self.add_weight(shape=(256,), initializer="zeros", trainable=True, name='b1')
+    self.w2 = self.add_weight(shape=(1,1,256,64), initializer="random_normal", trainable=True, name='w2')
+    self.b2 = self.add_weight(shape=(64,), initializer="zeros", trainable=True, name='b2')
+    self.w3 = self.add_weight(shape=(1,1,64,3), initializer="random_normal", trainable=True, name='w3')
+    self.b3 = self.add_weight(shape=(3,), initializer="zeros", trainable=True, name='b3')
   
-  out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(input_)
-  out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(out_2)
-  out_2 = layers.SeparableConv2D(c//2, (k2,k2), strides = (s2, s2), padding=pad)(out_2)
-  
-  out_2 = layers.UpSampling2D(size=(2, 2))(out_2)  
-  out_2 = layers.UpSampling2D(size=(2, 2))(out_2) 
-  out_2 = layers.UpSampling2D(size=(2, 2))(out_2)
-  
-  out = layers.Add()([out_1, out_2])
-  output_ = layers.Activation('tanh')(out) 
-  model = Model(inputs=input_, outputs=output_)
-  op = keras.optimizers.Adam(learning_rate=0.001)
-  model.compile(optimizer=op, loss=vgg_loss)
-  return model
-     
+  def call(self, inputs):
+    n, h, w, c = inputs.shape.as_list()
+    #stride_ = 64 #train
+    stride_ = 128 #test
+    hi = []
+    for hight in range(0, h-stride_+1, stride_):
+      wi = []
+      for width in range(0, w-stride_+1, stride_):
+          inputs_ = inputs[:, hight:hight+stride_, width:width+stride_, :]
+          temp0 = tf.matmul(inputs_, self.w1) + self.b1          
+          temp0 = tf.nn.relu(temp0)
+          temp1 = tf.matmul(temp0, self.w2) + self.b2      
+          temp1 = tf.nn.relu(temp1)
+          temp2 = tf.matmul(temp1, self.w3) + self.b3
+          temp2 = tf.nn.relu(temp2)
+          
+          wi.append(temp2)
+      length = len(wi)
+      fist_item = tf.concat([wi[0], wi[1]], axis=2)
+      for index in range(2, length):
+          fist_item = tf.concat([fist_item, wi[index]], axis=2)
+      hi.append(fist_item)
+    
+    length = len(hi)
+    fist_item0 = tf.concat([hi[0], hi[1]], axis=1)
+    for index in range(2, length):
+        fist_item0 = tf.concat([fist_item0, hi[index]], axis=1)
+    
+    return fist_item0
+    
 def channel_shuffle(x):
     num_groups = 2
     n, h, w, c = x.shape.as_list()

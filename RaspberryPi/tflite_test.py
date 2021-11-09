@@ -1,14 +1,12 @@
 import tensorflow as tf
-#tf.enable_eager_execution()
 from tensorflow import keras
 from tensorflow.keras import layers, Model
-# import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 import imageio as io
 ch = 6
-w = 2688#256
-h = 1792#128
+w  = 336
+h  = 224
 
 def norm_0_to_1(img):
     img = np.float32(img)
@@ -20,7 +18,7 @@ def norm_0_to_1(img):
 
 def test_tflite():
     # Load TFLite model and allocate tensors.
-    interpreter = tf.lite.Interpreter(model_path="lite_model_cust_2688x1792.tflite")
+    interpreter = tf.lite.Interpreter(model_path="lite_model.tflite")
     interpreter.allocate_tensors()
 
     # Get input and output tensors.
@@ -28,11 +26,11 @@ def test_tflite():
     output_details = interpreter.get_output_details()
 
     # load data
-    p_over = 'over_exposed.JPG'#'./over_exp256x128.png'
+    p_over = './test/1/over_exposed.jpg'
     over_exp = cv2.imread(p_over)
     over_exp = over_exp[:, :, ::-1]
 
-    p_under = 'under_exposed.JPG'#'./under_exp256x128.png'
+    p_under = './test/1/under_exposed.jpg'
     under_exp = cv2.imread(p_under)
     under_exp = under_exp[:, :, ::-1]
 
