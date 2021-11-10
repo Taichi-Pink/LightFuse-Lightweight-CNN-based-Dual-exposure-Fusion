@@ -36,4 +36,12 @@ The official codebase for [LightFuse: Lightweight CNN based Dual-exposure Fusion
   python train.py
   ```
 
-<!-- ## Citation --> 
+## Citation
+```
+@article{liu2021lightfuse,
+  title={LightFuse: Lightweight CNN based Dual-exposure Fusion},
+  author={Liu, Ziyi and Yang, Jie and Yanushkevich, Svetlana and Yadid-Pecht, Orly},
+  journal={arXiv preprint arXiv:2107.02299},
+  year={2021}
+}
+```
