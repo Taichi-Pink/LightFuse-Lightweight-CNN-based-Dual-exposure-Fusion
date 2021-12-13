@@ -1,33 +1,24 @@
-Deploy LightFuse on Raspberry Pi
+# Deploy LightFuse on Raspberry Pi
 
 ## Get Started
 ### Prerequisites
- * Python 	       = 3.7.9
- * TensorFlow     = 1.15.0
- * Opencv-python  = 4.4.0.44
- * Scipy          = 1.5.2
- * Matplotlib     = 3.3.1
-  
+ * A Raspberry Pi 2/3/4
+ * An SD Card
+ 
 ### Setup
- * Clone this repo:
- ```
- git clone https://github.com/Taichi-Pink/LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion.git
- cd LightFuse-Lightweight-CNN-based-Dual-exposure-Fusion
- ```
- <!-- * Download data from [SICE dataset](https://github.com/csjcai/SICE). Place it under ```Dataset``` folder. Split the data in Dataset_Part1 into train (80%) and test (20%) set. -->
+ * Install OS on Raspberry Pi. Please follow [this tutorial](https://ziyiliu29.medium.com/install-os-on-raspberry-pi-eef50a402510).
+ * Set TensorFlow environment on your Raspberry Pi. Please follow [this tutorial](https://ziyiliu29.medium.com/deploy-tensorflow-model-on-raspberry-pi-1ba31d22c848)
 
 ### Test
- ```
- python test.py
- ```
-### Train
-  * Prepare TFRecord.
+
+  * Convert pre-trained weights to a TFLite file.
   ```
-  python FuDataset.py
+  python tflite_converter.py
   ```
-  * run train.py
+  * Run tflite_test.py. 
   ```
-  python train.py
+  python tflite_test.py
   ```
+  * Check the saved image ```test_cust.png``` on your Raspberry Pi.
 
 <!-- ## Citation --> 
