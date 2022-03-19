@@ -61,9 +61,9 @@ def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, f1=256, f2=64, pad="same", a
     conv_ = custconv2d()
     out_1 = conv_(input_)
 
-    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad, activation=act)(input_)
-    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad, activation=act)(out_2)
-    out_2 = layers.SeparableConv2D(c//2, (k2,k2), strides = (s2, s2), padding=pad, activation=act)(out_2)
+    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(input_)
+    out_2 = layers.DepthwiseConv2D((k2,k2), strides = (s2, s2), padding=pad)(out_2)
+    out_2 = layers.SeparableConv2D(c//2, (k2,k2), strides = (s2, s2), padding=pad)(out_2)
 
     out_2 = layers.UpSampling2D(size=(2, 2))(out_2)  
     out_2 = layers.UpSampling2D(size=(2, 2))(out_2) 
@@ -95,12 +95,9 @@ class custconv2d(keras.layers.Layer):
       wi = []
       for width in range(0, w-stride_+1, stride_):
           inputs_ = inputs[:, hight:hight+stride_, width:width+stride_, :]
-          temp0 = tf.matmul(inputs_, self.w1) + self.b1          
-          temp0 = tf.nn.relu(temp0)
-          temp1 = tf.matmul(temp0, self.w2) + self.b2      
-          temp1 = tf.nn.relu(temp1)
-          temp2 = tf.matmul(temp1, self.w3) + self.b3
-          temp2 = tf.nn.relu(temp2)
+          temp0 = tf.nn.relu(tf.matmul(inputs_, self.w1) + self.b1)    
+          temp1 = tf.nn.relu(tf.matmul(temp0, self.w2) + self.b2)
+          temp2 = tf.nn.relu(tf.matmul(temp1, self.w3) + self.b3)
           
           wi.append(temp2)
       length = len(wi)
