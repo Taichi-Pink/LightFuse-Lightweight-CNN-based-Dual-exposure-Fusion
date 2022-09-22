@@ -56,7 +56,7 @@ def compute_psnr(img1, img2):
     PIXEL_MAX = 1.0 
     return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
 
-def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, f1=256, f2=64, pad="same", act='relu'):
+def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, pad="same", act='relu'):
     input_ = keras.Input((w, h, c))
     conv_ = custconv2d()
     out_1 = conv_(input_)
@@ -79,11 +79,35 @@ def supervised_model(w,h,c, k1=1, k2=3, s1=1, s2=2, f1=256, f2=64, pad="same", a
 class custconv2d(keras.layers.Layer):
   def __init__(self):
     super(custconv2d, self).__init__()
-    self.w1 = self.add_weight(shape=(1,1,6,256), initializer="random_normal", trainable=True, name='w1')
-    self.b1 = self.add_weight(shape=(256,), initializer="zeros", trainable=True, name='b1')
-    self.w2 = self.add_weight(shape=(1,1,256,64), initializer="random_normal", trainable=True, name='w2')
-    self.b2 = self.add_weight(shape=(64,), initializer="zeros", trainable=True, name='b2')
-    self.w3 = self.add_weight(shape=(1,1,64,3), initializer="random_normal", trainable=True, name='w3')
+    self.w1 = self.add_weight(shape=(1,1,6,32), initializer="random_normal", trainable=True, name='w1')
+    self.b1 = self.add_weight(shape=(32,), initializer="zeros", trainable=True, name='b1')
+    self.w2 = self.add_weight(shape=(1,1,32,32), initializer="random_normal", trainable=True, name='w2')
+    self.b2 = self.add_weight(shape=(32,), initializer="zeros", trainable=True, name='b2')
+    self.w3 = self.add_weight(shape=(1,1,32,3), initializer="random_normal", trainable=True, name='w3')
+    self.b3 = self.add_weight(shape=(3,), initializer="zeros", trainable=True, name='b3')
+  
+  def call(self, inputs):
+    n, h, w, c = inputs.shape.as_list()
+    a = tf.Variable(tf.zeros((1,896,1344,3), 'float32'))
+    stride_ = 448#896 #test
+
+    for hight in range(0, h-stride_+1, stride_):
+      for width in range(0, w-stride_+1, stride_):
+          inputs_ = inputs[:, hight:hight+stride_, width:width+stride_, :]
+          temp0 = tf.nn.relu(tf.matmul(inputs_, self.w1) + self.b1)    
+          temp1 = tf.nn.relu(tf.matmul(temp0, self.w2) + self.b2)
+          a[:, hight:hight+stride_, width:width+stride_, :].assign(tf.nn.relu(tf.matmul(temp1, self.w3) + self.b3))
+    return a
+  
+  
+class custconv2d_2(keras.layers.Layer):
+  def __init__(self):
+    super(custconv2d_2, self).__init__()
+    self.w1 = self.add_weight(shape=(1,1,6,32), initializer="random_normal", trainable=True, name='w1')
+    self.b1 = self.add_weight(shape=(32,), initializer="zeros", trainable=True, name='b1')
+    self.w2 = self.add_weight(shape=(1,1,32,32), initializer="random_normal", trainable=True, name='w2')
+    self.b2 = self.add_weight(shape=(32,), initializer="zeros", trainable=True, name='b2')
+    self.w3 = self.add_weight(shape=(1,1,32,3), initializer="random_normal", trainable=True, name='w3')
     self.b3 = self.add_weight(shape=(3,), initializer="zeros", trainable=True, name='b3')
   
   def call(self, inputs):
@@ -112,14 +136,6 @@ class custconv2d(keras.layers.Layer):
         fist_item0 = tf.concat([fist_item0, hi[index]], axis=1)
     
     return fist_item0
-    
-def channel_shuffle(x):
-    num_groups = 2
-    n, h, w, c = x.shape.as_list()
-    x_reshaped = tf.reshape(x, [-1, h, w, num_groups, c // num_groups])
-    x_transposed = tf.transpose(x_reshaped, [0, 1, 2, 4, 3])
-    output = tf.reshape(x_transposed, [-1, h, w, c])
-    return output
       
 def transform(image, im_size=(256,256)):
     out = tf.cast(image, tf.float32)
